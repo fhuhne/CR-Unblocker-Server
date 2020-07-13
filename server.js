@@ -1,5 +1,4 @@
 const express = require('express');
-// const request = require('request');
 const axios = require('axios');
 const helmet = require('helmet');
 const qs = require('querystring');
@@ -16,8 +15,8 @@ const knownVersions = ['1.0', '1.1'];
 function setOptions(query) {
 	let querystring = {
 		version: '1.0',
-		access_token: 'Scwg9PRRZ19iVwD', // eslint-disable-line
-		device_type: 'com.crunchyroll.crunchyroid', // eslint-disable-line
+		access_token: 'LNDJgOit5yaRIWN', // eslint-disable-line
+		device_type: 'com.crunchyroll.windows.desktop', // eslint-disable-line
 		device_id: generateId() // eslint-disable-line
 	};
 
@@ -78,6 +77,8 @@ app.get('/start_session', (req, res) => {
 	// default version if none specified: 1.0
 	let version = req.query.version || '1.0';
 
+	console.log(req.query);
+
 	// validate version against whitelist
 	if (knownVersions.indexOf(version) === -1) {
 		replyError(res, 'Invalid API version specified.');
@@ -100,9 +101,11 @@ app.get('/start_session', (req, res) => {
 
 		let options = setOptions(req.query);
 
-		axios(`${URL}?${qs.stringify(options)}`)
-			.then((result) => {
-				const body = result.data;
+		console.log('Requesting token: ' + `${URL}?${qs.stringify(options)}`);
+
+		axios.post(`${URL}?${qs.stringify(options)}`)
+			.then((response) => {
+				const body = response.data;
 				if (body.error) {
 					replySuccess(res, body);
 					return;
@@ -112,7 +115,7 @@ app.get('/start_session', (req, res) => {
 					return;
 				}
 
-				replySuccess(res, result.data);
+				replySuccess(res, response.data);
 			})
 			.catch((e) => {
 				if (e.response) {
