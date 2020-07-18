@@ -77,8 +77,6 @@ app.get('/start_session', (req, res) => {
 	// default version if none specified: 1.0
 	let version = req.query.version || '1.0';
 
-	console.log(req.query);
-
 	// validate version against whitelist
 	if (knownVersions.indexOf(version) === -1) {
 		replyError(res, 'Invalid API version specified.');
@@ -100,8 +98,6 @@ app.get('/start_session', (req, res) => {
 		}
 
 		let options = setOptions(req.query);
-
-		console.log('Requesting token: ' + `${URL}?${qs.stringify(options)}`);
 
 		axios.post(`${URL}?${qs.stringify(options)}`)
 			.then((response) => {
